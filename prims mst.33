@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_VERTICES 100
+#define INF 999999
+
+int graph[MAX_VERTICES][MAX_VERTICES];
+int numVertices;
+
+void primMST() {
+    int selected[MAX_VERTICES];
+    int i, j, numEdges;
+    int minWeight, u, v;
+
+    for (i = 0; i < numVertices; i++)
+        selected[i] = false;
+
+  
+    numEdges = numVertices - 1;
+
+   
+    selected[0] = true;
+
+   
+    printf("Edge : Weight\n");
+
+    while (numEdges > 0) {
+        minWeight = INF;
+        u = v = -1;
+
+        for (i = 0; i < numVertices; i++) {
+            if (selected[i]) {
+                for (j = 0; j < numVertices; j++) {
+                    if (!selected[j] && graph[i][j]) {
+                        if (graph[i][j] < minWeight) {
+                            minWeight = graph[i][j];
+                            u = i;
+                            v = j;
+                        }
+                    }
+                }
+            }
+        }
+
+        printf("%d - %d : %d\n", u, v, minWeight);
+        selected[v] = true;
+        numEdges--;
+    }
+}
+
+int main() {
+    int i, j;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &numVertices);
+
+    printf("Enter the adjacency matrix (0 for no edge, weight otherwise):\n");
+    for (i = 0; i < numVertices; i++) {
+        for (j = 0; j < numVertices; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    printf("\nMinimum Spanning Tree using Prim's Algorithm:\n");
+    primMST();
+
+    return 0;
+}
