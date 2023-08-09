@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_VERTICES 100
+
+int graph[MAX_VERTICES][MAX_VERTICES];
+bool visited[MAX_VERTICES];
+int numVertices;
+
+int prim() {
+    int selectedCount = 1;
+    int selectedVertices[MAX_VERTICES] = {0}; 
+    int totalCost = 0;
+
+    visited[0] = true;
+
+    while (selectedCount < numVertices) {
+        int minCost = 9999; 
+        int u = -1;
+        int v = -1;
+
+        for (int i = 0; i < numVertices; i++) {
+            if (visited[i]) {
+                for (int j = 0; j < numVertices; j++) {
+                    if (!visited[j] && graph[i][j] != -1 && graph[i][j] < minCost) {
+                        minCost = graph[i][j];
+                        u = i;
+                        v = j;
+                    }
+                }
+            }
+        }
+
+        if (u != -1 && v != -1) {
+            visited[v] = true;
+            selectedVertices[selectedCount++] = v;
+            totalCost += minCost;
+        }
+    }
+
+    printf("Selected vertices in the MST: ");
+    for (int i = 0; i < numVertices; i++) {
+        printf("%d ", selectedVertices[i]);
+    }
+    printf("\n");
+
+    return totalCost;
+}
+
+int main() {
+    printf("Enter the number of vertices (maximum %d): ", MAX_VERTICES);
+    scanf("%d", &numVertices);
+
+    printf("Enter the adjacency matrix for the graph (-1 for no edge):\n");
+    for (int i = 0; i < numVertices; i++) {
+        for (int j = 0; j < numVertices; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+        visited[i] = false;
+    }
+
+    int optimalCost = prim();
+    printf("Optimal cost using Prim's algorithm: %d\n", optimalCost);
+
+    return 0;
+}
