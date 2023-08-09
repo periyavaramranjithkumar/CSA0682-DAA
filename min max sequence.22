@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+void printMinMaxSequences(int arr[], int size) {
+    if (size == 0) {
+        printf("The array is empty.\n");
+        return;
+    }
+
+    int min_sequence = arr[0];
+    int max_sequence = arr[0];
+
+    printf("Minimum value sequence: %d", min_sequence);
+    printf("\nMaximum value sequence: %d", max_sequence);
+
+    for (int i = 1; i < size; i++) {
+        min_sequence = (arr[i] < (min_sequence + arr[i])) ? arr[i] : (min_sequence + arr[i]);
+        max_sequence = (arr[i] > (max_sequence + arr[i])) ? arr[i] : (max_sequence + arr[i]);
+
+        printf(", %d", min_sequence);
+        printf("\n, %d", max_sequence);
+    }
+    printf("\n");
+}
+
+int main() {
+    int size;
+    printf("Enter the size of the array: ");
+    scanf("%d", &size);
+
+    int arr[size];
+    printf("Enter the elements of the array: ");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    printMinMaxSequences(arr, size);
+
+    return 0;
+}
