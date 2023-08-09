@@ -1,0 +1,53 @@
+#include <stdio.h>
+
+#define MAX_CITIES 10
+
+int n;
+int g[MAX_CITIES][MAX_CITIES];
+int dp[MAX_CITIES][1 << MAX_CITIES];
+
+int tsp(int c, int v) {
+    if (v == (1 << n) - 1) {
+        return g[c][0];
+    }
+
+    if (dp[c][v] != -1) {
+        return dp[c][v];
+    }
+
+    int md = 1e9;
+    for (int nc = 0; nc < n; nc++) {
+        if (!(v & (1 << nc))) {
+            int d = g[c][nc] + tsp(nc, v | (1 << nc));
+            if (d < md) {
+                md = d;
+            }
+        }
+    }
+
+    dp[c][v] = md;
+    return md;
+}
+
+int main() {
+    printf("Enter the number of cities (maximum %d): ", MAX_CITIES);
+    scanf("%d", &n);
+
+    printf("Enter the distances between cities (use -1 for unreachable cities):\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &g[i][j]);
+        }
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < (1 << n); j++) {
+            dp[i][j] = -1;
+        }
+    }
+
+    int sd = tsp(0, 1);
+    printf("Shortest distance for the TSP: %d\n", sd);
+
+    return 0;
+}
