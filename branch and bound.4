@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_N 10
+
+int n; 
+int costMatrix[MAX_N][MAX_N]; 
+
+
+typedef struct {
+    int agent;
+    int task;
+} Assignment;
+
+
+Assignment initialAssignment() {
+    Assignment assign;
+    assign.agent = -1;
+    assign.task = -1;
+    return assign;
+}
+
+
+bool isTaskAssigned(int task, Assignment assignment[]) {
+    for (int i = 0; i < n; i++) {
+        if (assignment[i].task == task) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+int calculateLowerBound(int agent, int task, Assignment assignment[]) {
+    int bound = 0;
+    
+    for (int i = 0; i < n; i++) {
+        if (assignment[i].agent == agent) {
+            bound += costMatrix[assignment[i].agent][assignment[i].task];
+        }
+    }
+    
+    for (int i = 0; i < n; i++) {
+        if (!isTaskAssigned(i, assignment) && costMatrix[agent][i] < bound) {
+            bound += costMatrix[agent][i];
+        }
+    }
+    return bound;
+}
+
+
+void branchAndBound(Assignment assignment[], int currentCost, int* minCost, Assignment* optimalAssignment) {
+    int agent = -1;
+    for (int i = 0; i < n; i++) {
+        if (!isTaskAssigned(i, assignment)) {
+            agent = i;
+            break;
+        }
+    }
+
+    if (agent == -1) {
+        
+        if (currentCost < *minCost) {
+            *minCost = currentCost;
+            for (int i = 0; i < n; i++) {
+                optimalAssignment[i] = assignment[i];
+            }
+        }
+        return;
+    }
+
+    
+    for (int task = 0; task < n; task++) {
+        if (!isTaskAssigned(task, assignment)) {
+            int lowerBound = currentCost + costMatrix[agent][task] + calculateLowerBound(agent, task, assignment);
+            if (lowerBound < *minCost) {
+                assignment[agent].agent = agent;
+                assignment[agent].task = task;
+                branchAndBound(assignment, lowerBound, minCost, optimalAssignment);
+                assignment[agent].agent = -1; 
+                assignment[agent].task = -1;
+            }
+        }
+    }
+}
+
+int main() {
+    printf("Enter the number of agents and tasks (maximum %d): ", MAX_N);
+    scanf("%d", &n);
+
+    printf("Enter the cost matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &costMatrix[i][j]);
+        }
+    }
+
+    Assignment assignment[MAX_N];
+    for (int i = 0; i < n; i++) {
+        assignment[i] = initialAssignment();
+    }
+
+    int minCost = 999999; 
+    Assignment optimalAssignment[MAX_N];
+
+    branchAndBound(assignment, 0, &minCost, optimalAssignment);
+
+    printf("Optimal Assignment:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Agent %d -> Task %d\n", optimalAssignment[i].agent + 1, optimalAssignment[i].task + 1);
+    }
+
+    printf("Minimum Cost: %d\n", minCost);
+
+    return 0;
+}
