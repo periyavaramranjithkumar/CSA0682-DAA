@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_VERTICES 10
+
+int n; 
+int graph[MAX_VERTICES][MAX_VERTICES]; 
+int colors[MAX_VERTICES]; 
+
+
+bool isSafe(int v, int color, int colors[]) {
+    for (int i = 0; i < n; i++) {
+        if (graph[v][i] && color == colors[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool graphColoringUtil(int m, int colors[]) {
+    int v;
+    for (v = 0; v < n; v++) {
+        if (colors[v] == 0) {
+            for (int c = 1; c <= m; c++) {
+                if (isSafe(v, c, colors)) {
+                    colors[v] = c;
+                    if (graphColoringUtil(m, colors)) {
+                        return true;
+                    }
+                    colors[v] = 0; 
+                }
+            }
+            return false;
+        }
+    }
+    return true;
+}
+
+
+void printColors(int colors[]) {
+    printf("Colors assigned to vertices:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Vertex %d -> Color %d\n", i + 1, colors[i]);
+    }
+}
+
+int main() {
+    int m; 
+    printf("Enter the number of vertices (maximum %d): ", MAX_VERTICES);
+    scanf("%d", &n);
+
+    printf("Enter the adjacency matrix (1 if the vertices are adjacent, 0 otherwise):\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    printf("Enter the number of colors: ");
+    scanf("%d", &m);
+
+    for (int i = 0; i < n; i++) {
+        colors[i] = 0; 
+    }
+
+    if (graphColoringUtil(m, colors)) {
+        printColors(colors);
+    } else {
+        printf("Graph cannot be colored with %d colors.\n", m);
+    }
+
+    return 0;
+}
