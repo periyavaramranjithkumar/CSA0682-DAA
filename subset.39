@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_SIZE 20
+
+int n; 
+int set[MAX_SIZE]; 
+
+
+bool subsetSum(int pos, int sum, int target) {
+    if (sum == target) {
+        return true;
+    }
+
+    for (int i = pos; i < n; i++) {
+        if (sum + set[i] <= target) {
+            if (subsetSum(i + 1, sum + set[i], target)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    int targetSum;
+
+    printf("Enter the number of elements in the set (maximum %d): ", MAX_SIZE);
+    scanf("%d", &n);
+
+    printf("Enter the elements of the set:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &set[i]);
+    }
+
+    printf("Enter the target sum: ");
+    scanf("%d", &targetSum);
+
+    if (subsetSum(0, 0, targetSum)) {
+        printf("Subset with the given target sum exists.\n");
+    } else {
+        printf("No subset with the given target sum exists.\n");
+    }
+
+    return 0;
+}
