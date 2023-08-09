@@ -1,0 +1,60 @@
+#include<stdio.h>
+int main()
+{
+	int r1,i,j,c1r2,m1[100][100],c2,m2[100][100],k,sum[r1][c2];
+
+	printf("enter r1: ");
+	scanf("%d",&r1);
+	printf("enter c1 and r2: ");
+	scanf("%d",&c1r2);
+	printf("enter c2: ");
+	scanf("%d",&c2);
+	printf("elements for m1: ");
+	for(i=0;i<r1;i++)
+	{
+		for(j=0;j<c1r2;j++)
+		{
+			scanf("%d,%d",&m1[i][j]);
+		}
+	}
+		for(i=0;i<r1;i++)
+	{
+		for(j=0;j<c1r2;j++)
+		{
+		  printf("%d\t",m1[i][j]);	
+		}
+		printf("\n");
+	}
+	printf("elements for m2: ");
+	for(i=0;i<c1r2;i++)
+	{
+		for(j=0;j<c2;j++)
+		{
+			scanf("%d,%d",&m2[i][j]);
+		}
+	}
+		for(i=0;i<c1r2;i++)
+	{
+		for(j=0;j<c2;j++)
+		{
+		  printf("%d\t",m2[i][j]);	
+		}
+		printf("\n");
+	}
+	printf("resultant matrix:\n");
+	for(i=0;i<r1;i++)
+	{
+		for(j=0;j<c2;j++)
+		{
+			sum[i][j]=0;
+			for(k=0;k<c1r2;k++)
+			{
+				sum[i][j]+=m1[i][k]*m2[k][j];
+			}
+			printf("%d\t",sum[i][j]);
+			
+		}
+		printf("\n");
+	}
+	
+}
