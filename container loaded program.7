@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_CONTAINERS 100
+
+typedef struct {
+    int id;
+    int weight;
+} Container;
+
+
+void swap(Container *a, Container *b) {
+    Container temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+
+void sortContainers(Container containers[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (containers[j].weight < containers[j + 1].weight) {
+                swap(&containers[j], &containers[j + 1]);
+            }
+        }
+    }
+}
+
+
+int containerLoader(Container containers[], int n, int maxLoad) {
+    sortContainers(containers, n);
+
+    int totalWeight = 0;
+    int loadedWeight = 0;
+    int loadedContainers = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (loadedWeight + containers[i].weight <= maxLoad) {
+            loadedWeight += containers[i].weight;
+            totalWeight += containers[i].weight;
+            loadedContainers++;
+        }
+    }
+
+    printf("Maximum loaded weight: %d\n", totalWeight);
+    printf("Number of containers loaded: %d\n", loadedContainers);
+    printf("Container IDs loaded: ");
+    for (int i = 0; i < loadedContainers; i++) {
+        printf("%d ", containers[i].id);
+    }
+    printf("\n");
+
+    return totalWeight;
+}
+
+int main() {
+    int n;
+    int maxLoad;
+
+    printf("Enter the number of containers (maximum %d): ", MAX_CONTAINERS);
+    scanf("%d", &n);
+
+    if (n <= 0 || n > MAX_CONTAINERS) {
+        printf("Invalid number of containers. Exiting the program.\n");
+        return 1;
+    }
+
+    Container containers[MAX_CONTAINERS];
+    printf("Enter the weight of each container:\n");
+    for (int i = 0; i < n; i++) {
+        containers[i].id = i + 1;
+        scanf("%d", &containers[i].weight);
+    }
+
+    printf("Enter the maximum load of the container: ");
+    scanf("%d", &maxLoad);
+
+    containerLoader(containers, n, maxLoad);
+
+    return 0;
+}
